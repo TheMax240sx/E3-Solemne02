@@ -1,0 +1,101 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # 1. Backend: Django
+  backend:
+    build: ./backend
+    container_name: django_backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000" # Exposición temporal para pruebas, será servido por Apache
+    environment:
+      - DB_HOST=db_postgres
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASS=supersecretpass
+      - MONGO_HOST=db_mongo
+      - EMAIL_HOST=mailhog # Conexión al servidor de correo
+      - EMAIL_PORT=1025
+    depends_on:
+      - db_postgres
+      - db_mongo
+      - mailhog
+    networks:
+      - app-network
+
+  # 2. Frontend: React
+  frontend:
+    build: ./frontend
+    container_name: react_frontend
+    volumes:
+      - ./frontend/src:/app/src # Sincroniza solo el código fuente
+    ports:
+      - "3000:3000" # Puerto de desarrollo de React
+    networks:
+      - app-network
+
+  # 3. Base de Datos Relacional: PostgreSQL
+  db_postgres:
+    image: postgres:14-alpine
+    container_name: db_postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecretpass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      # Puerto 5433 en el host (tu PC) mapeado al 5432 del contenedor
+      # Esto permite el acceso remoto seguro con Navicat 
+      - "127.0.0.1:5433:5432" 
+    networks:
+      - app-network
+
+  # 4. Base de Datos Documental: MongoDB
+  db_mongo:
+    image: mongo:latest
+    container_name: db_mongo
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      # Puerto 27018 en el host (tu PC) mapeado al 27017 del contenedor 
+      - "127.0.0.1:27018:27017"
+    networks:
+      - app-network
+
+  # 5. Servidor de Correo (Pruebas): Mailhog
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "1025:1025" # Puerto SMTP para que Django envíe correos
+      - "8025:8025" # Interfaz web para ver los correos capturados
+    networks:
+      - app-network
+
+  # 6. Servidor Web / Proxy: Apache
+  webserver:
+    image: httpd:2.4
+    container_name: apache_proxy
+    volumes:
+      # Monta el archivo de configuración personalizado
+      - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    ports:
+      - "80:80"   # Puerto público principal
+      - [cite_start]"443:443" # Puerto seguro (requiere config SSL )
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+  mongo_data:
+
+networks:
+  app-network:
+    driver: bridge
