@@ -1,5 +1,3 @@
-# docker-compose.yml
-version: '3.8'
 
 services:
   # 1. Backend: Django
@@ -85,7 +83,7 @@ services:
       - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
     ports:
       - "80:80"   # Puerto público principal
-      - [cite_start]"443:443" # Puerto seguro (requiere config SSL )
+      - "443:443" # Puerto seguro (requiere config SSL )
     depends_on:
       - backend
       - frontend
