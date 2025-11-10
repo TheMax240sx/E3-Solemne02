@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Las apps
+
+    # Dependencias añadidas
+    'rest_framework',
+    'djongo',
 ]
 
 MIDDLEWARE = [
@@ -74,9 +80,25 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+    # Base de datos principal (Relacional)
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', 'postgres'),
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'HOST': os.environ.get('DB_HOST', 'db_postgres'), # <-- El nombre del servicio en Docker
+        'PORT': 5432,
+        'PASSWORD': os.environ.get('DB_PASS', 'supersecretpass')
+    },
+    
+    # Base de datos secundaria (Documental)
+    'mongo': {
+        'ENGINE': 'djongo',
+        'NAME': 'db_documental',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': os.environ.get('MONGO_HOST', 'db_mongo'), # <-- El nombre del servicio
+            'port': 27017,
+        }
     }
 }
 
@@ -121,3 +143,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- Configuración de Correo (Mailhog) ---
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'mailhog') # <-- El nombre del servicio
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 1025) # <-- El puerto SMTP de Mailhog
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'admin@tu-proyecto.com'
