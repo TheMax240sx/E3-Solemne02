@@ -1,5 +1,8 @@
-# backend/Dockerfile
+
 FROM python:3.9-slim
+
+# Instala postgresql-client para tener el comando "pg_isready"
+RUN apt-get update && apt-get install -y postgresql-client
 
 # Variables de entorno
 ENV PYTHONDONTWRITEBYTECODE 1

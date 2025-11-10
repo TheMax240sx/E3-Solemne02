@@ -4,7 +4,7 @@ services:
   backend:
     build: ./backend
     container_name: django_backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app
     ports:
@@ -17,10 +17,16 @@ services:
       - MONGO_HOST=db_mongo
       - EMAIL_HOST=mailhog # Conexión al servidor de correo
       - EMAIL_PORT=1025
+
+    # Ahora "backend" esperará a que "db_postgres" esté "healthy"
     depends_on:
-      - db_postgres
-      - db_mongo
-      - mailhog
+      db_postgres:
+        condition: service_healthy
+      db_mongo:
+        condition: service_started
+      mailhog:
+        condition: service_started
+        
     networks:
       - app-network
 
@@ -43,6 +49,12 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=supersecretpass
+    # Docker chequeará cada 5s si Postgres está listo para recibir conexiones
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
