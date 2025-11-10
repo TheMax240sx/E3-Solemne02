@@ -1,0 +1,12 @@
+# Archivos de Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE (Editor de Código)
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Archivos de entorno
+.env

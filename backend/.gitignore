@@ -1,0 +1,11 @@
+# Bytecode compilado por Python
+__pycache__/
+*.pyc
+
+# Entornos virtuales de Python
+venv/
+env/
+.venv/
+
+# Archivos de Django
+*.log
