@@ -92,7 +92,7 @@ services:
     container_name: apache_proxy
     volumes:
       # Monta el archivo de configuración personalizado
-      - ./apache/httpd.conf:/usr/local/apache2/conf/extra/httpd-proxy.conf
+      - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
     ports:
       - "80:80"   # Puerto público principal
       - "443:443" # Puerto seguro (requiere config SSL )
