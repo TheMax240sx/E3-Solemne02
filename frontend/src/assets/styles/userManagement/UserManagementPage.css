@@ -1,0 +1,123 @@
+.user-mgmt-container {
+  max-width: 700px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 32px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.user-mgmt-container h1 {
+  margin-bottom: 24px;
+}
+
+.user-mgmt-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 32px;
+}
+
+.user-mgmt-list th, .user-mgmt-list td {
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  text-align: left;
+}
+
+.user-mgmt-list th {
+  background: #f5f6fa;
+}
+
+.user-mgmt-actions button {
+  margin-right: 8px;
+}
+
+.user-mgmt-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.user-mgmt-form input {
+  padding: 6px 10px;
+  border: 1px solid #bfc4d1;
+  border-radius: 4px;
+}
+
+.user-mgmt-form button {
+  padding: 6px 16px;
+  background: #232946;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.user-mgmt-form button:disabled {
+  background: #bfc4d1;
+  cursor: not-allowed;
+}
+
+.user-mgmt-actions button {
+  margin-right: 8px;
+  padding: 7px 18px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  background: #232946;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(35,41,70,0.08);
+}
+
+.user-mgmt-actions button:last-child {
+  margin-right: 0;
+}
+
+.user-mgmt-actions button:hover:not(:disabled) {
+  background: #393e6a;
+  color: #f4f4f4;
+  box-shadow: 0 4px 12px rgba(35,41,70,0.13);
+}
+
+.user-mgmt-actions button:active:not(:disabled) {
+  background: #161b33;
+}
+
+.user-mgmt-actions button:disabled {
+  background: #bfc4d1;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Botón Crear Usuario */
+.user-mgmt-container > button {
+  padding: 8px 22px;
+  background: #232946;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1.08rem;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.10);
+  transition: background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.user-mgmt-container > button:hover:not(:disabled) {
+  background: #393e6a;
+  box-shadow: 0 4px 16px rgba(35,41,70,0.15);
+}
+
+.user-mgmt-container > button:active:not(:disabled) {
+  background: #161b33;
+}
+
+.user-mgmt-container > button:disabled {
+  background: #bfc4d1;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}

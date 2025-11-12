@@ -1,0 +1,49 @@
+.modal-user-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-user-content {
+  background: #fff;
+  padding: 32px 28px 24px 28px;
+  border-radius: 8px;
+  min-width: 320px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+}
+
+.modal-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-user-form input {
+  padding: 8px 12px;
+  border: 1px solid #bfc4d1;
+  border-radius: 4px;
+}
+
+.modal-user-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.modal-user-actions button {
+  padding: 7px 18px;
+  background: #232946;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-user-actions button:disabled {
+  background: #bfc4d1;
+  cursor: not-allowed;
+}
