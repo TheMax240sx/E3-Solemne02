@@ -27,6 +27,8 @@ const apiService = axios.create({
    * nunca sabrá que estamos logueados.
    */
   withCredentials: true,
+  xsrfCookieName: 'csrftoken', // Nombre de la cookie CSRF que Django usa por defecto
+  xsrfHeaderName: 'X-CSRFToken', // Nombre del header que Axios enviará con el token CSRF
 });
 
 // ========================================================================
@@ -69,6 +71,12 @@ export interface PasswordResetData {
   email: string;
 }
 
+export interface PasswordResetConfirmData {
+  uidb64: string;
+  token: string;
+  new_password: string;
+}
+
 /**
  * Datos del Dashboard.
  * (Basado en el DashboardIndicatorSerializer)
@@ -87,7 +95,6 @@ export interface DashboardIndicator {
 
 /**
  * Inicia sesión en el backend.
- * DRF (Django Rest Framework) usa el endpoint '/api/auth/login/'.
  * No devuelve datos, solo establece una cookie de sesión si tiene éxito.
  */
 export const loginApi = async (credentials: LoginCredentials): Promise<void> => {
@@ -116,10 +123,18 @@ export const getCurrentUserApi = async (): Promise<User> => {
 
 /**
  * Solicita un reseteo de contraseña.
- * Django enviará un correo (capturado por Mailhog).
+ * Llama a: POST /api/password-reset/
  */
 export const resetPasswordApi = async (emailData: PasswordResetData): Promise<void> => {
-  await apiService.post('/auth/password/reset/', emailData);
+  await apiService.post('/password-reset/', emailData);
+};
+
+/**
+ * Confirma el reseteo de contraseña.
+ * Llama a: POST /api/password-reset-confirm/
+ */
+export const confirmPasswordResetApi = async (confirmData: PasswordResetConfirmData): Promise<void> => {
+  await apiService.post('/password-reset-confirm/', confirmData);
 };
 
 // --- Gestión de Usuarios (CRUD Completo) ---

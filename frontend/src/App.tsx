@@ -6,6 +6,8 @@ import { useAuth } from './hooks/useAuth';
 import LoginPage from './pages/Login/LoginPage';
 import DashboardPage from './pages/Dashboard/DashboardPage';
 import UserManagementPage from './pages/UserManagement/UserManagementPage';
+import PasswordResetPage from './pages/PasswordReset/PasswordResetPage';
+import PasswordResetConfirmPage from './pages/PasswordReset/PasswordResetConfirmPage';
 
 /**
  * Componente simple para proteger rutas.
@@ -37,6 +39,13 @@ function App() {
           // redirígelo al Dashboard.
           isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />
         }
+      />
+
+      {/* ----- Rutas de Reseteo de Contraseña ----- */}
+      <Route path="/password-reset" element={<PasswordResetPage />} />
+      <Route 
+        path="/password-reset-confirm/:uidb64/:token" 
+        element={<PasswordResetConfirmPage />} 
       />
 
       {/* --- Ruta de Dashboard (Protegida) --- */}

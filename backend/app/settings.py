@@ -151,4 +151,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'mailhog') # <-- El nombre del servicio
 EMAIL_PORT = os.environ.get('EMAIL_PORT', 1025) # <-- El puerto SMTP de Mailhog
 EMAIL_USE_TLS = False
-DEFAULT_FROM_EMAIL = 'admin@tu-proyecto.com'
+DEFAULT_FROM_EMAIL = 'no-reply@miempresaTI.com'
+
+# URLS para construir los links de reseteo de contraseña
+# Le decimos a Django cuál es la URL de nuestro frontend
+FRONTEND_URL = 'http://localhost'
