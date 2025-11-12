@@ -1,1 +1,0 @@
-Para Navbar.tsx, Footer.tsx, etc.
