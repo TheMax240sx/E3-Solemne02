@@ -9,15 +9,28 @@ import {
 } from '../../services/apiService';
 import '../../assets/styles/userManagement/UserManagementPage.css';
 import ModalUserForm from './ModalUserForm';
+import { useAuth } from '../../hooks/useAuth'; // <-- importar hook
 
 // Página de gestión de usuarios
 const UserManagementPage = () => {
+  const { user } = useAuth(); // obtener usuario actual
   const [users, setUsers] = useState<User[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingData, setEditingData] = useState<Partial<RegisterData>>({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Si el usuario no es superusuario, mostramos mensaje de no autorizado
+  if (!user?.is_superuser) {
+    return (
+      <div className="user-mgmt-container">
+        <h1>Gestión de Usuarios</h1>
+        <div style={{ color: 'red' }}>No autorizado. Se requiere ser superusuario para gestionar usuarios.</div>
+      </div>
+    );
+  }
+
   // Cargar usuarios desde API
   const loadUsers = async () => {
     setLoading(true);
@@ -33,6 +46,7 @@ const UserManagementPage = () => {
   useEffect(() => {
     loadUsers();
   }, []);
+
   // Abrir modal para crear usuario
   const handleOpenCreate = () => {
     setEditingId(null);
