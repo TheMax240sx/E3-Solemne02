@@ -8,6 +8,7 @@ import DashboardPage from './pages/Dashboard/DashboardPage';
 import UserManagementPage from './pages/UserManagement/UserManagementPage';
 import PasswordResetPage from './pages/PasswordReset/PasswordResetPage';
 import PasswordResetConfirmPage from './pages/PasswordReset/PasswordResetConfirmPage';
+import ProfilePage from './pages/Profile/ProfilePage';
 
 // Importa la Sidebar y CSS
 import Sidebar from './components/layout/Sidebar';
@@ -53,6 +54,16 @@ function App() {
           <Route 
             path="/password-reset-confirm/:uidb64/:token" 
             element={<PasswordResetConfirmPage />} 
+          />
+
+          {/* --- Ruta de Perfil (Protegida) --- */}
+          <Route
+            path="/perfil"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
           />
 
           {/* --- Ruta de Dashboard (Protegida) --- */}
