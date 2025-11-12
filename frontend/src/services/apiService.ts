@@ -44,6 +44,7 @@ export interface User {
   id: number;
   username: string;
   email: string;
+  is_superuser?: boolean;
 }
 
 /**
@@ -198,3 +199,15 @@ export const getDashboardDataApi = async (): Promise<DashboardIndicator[]> => {
   const { data } = await apiService.get<DashboardIndicator[]>('/dashboard-stats/');
   return data;
 };
+
+export async function getMongoData(): Promise<any[]> {
+  const res = await fetch('/api/dashboard-stats/', {
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Error al obtener datos de MongoDB: ${res.status} ${text}`);
+  }
+  return res.json();
+}

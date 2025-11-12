@@ -13,16 +13,27 @@ from django.core.mail import send_mail
 from .models import DashboardIndicator
 from .serializers import UserSerializer, DashboardIndicatorSerializer
 
+# permiso que exige superusuario
+from rest_framework.permissions import BasePermission
+
+class IsSuperUser(BasePermission):
+    """
+    Permiso que sólo permite el acceso a usuarios autenticados y superusuarios.
+    """
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_authenticated and request.user.is_superuser)
+
 # -----------------
 # ViewSet para los Usuarios (Registro)
 # -----------------
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint que permite ver y crear Usuarios.
+    Sólo accesible para superusuarios.
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    # (Opcional) Puedes añadir permisos, ej: permissions.IsAdminUser
+    permission_classes = [IsSuperUser]  # <- Sólo superusuarios pueden listar/crear/editar/eliminar
     
 # -----------------
 # ViewSet para los Indicadores del Dashboard

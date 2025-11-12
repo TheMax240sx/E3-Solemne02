@@ -1,13 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../../assets/styles/sidebar/Sidebar.css';
 
 const Sidebar: React.FC = () => (
   <aside className="sidebar">
     <nav>
       <ul>
-        <li><a href="/">Inicio</a></li>
-        <li><a href="/perfil">Perfil</a></li>
-        <li><a href="/usuarios">Usuarios</a></li>
+        <li><Link to="/">Inicio</Link></li>
+        <li><Link to="/perfil">Perfil</Link></li>
+        <li><Link to="/usuarios">Usuarios</Link></li>
       </ul>
     </nav>
   </aside>
