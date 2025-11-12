@@ -35,9 +35,13 @@ services:
     build: ./frontend
     container_name: react_frontend
     volumes:
-      - ./frontend/src:/app/src # Sincroniza solo el código fuente
+          # Sincroniza toda la carpeta de frontend.
+          - ./frontend:/app
+          # Esta línea "protege" la carpeta node_modules que se 
+          # instaló DENTRO del contenedor, evitando que se borre.
+          - /app/node_modules
     ports:
-      - "3000:3000" # Puerto de desarrollo de React
+      - "5173:5173" # Puerto de desarrollo de Vite
     networks:
       - app-network
 

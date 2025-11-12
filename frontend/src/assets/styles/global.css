@@ -1,13 +1,37 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* 1. Reset básico y variables de color */
+:root {
+  /* Paleta de Colores */
+  --color-primary: #2c3e50;    /* Azul oscuro/gris (para headers, texto) */
+  --color-secondary: #3498db;   /* Azul brillante (para botones, links) */
+  --color-danger: #e74c3c;     /* Rojo (para errores, logout) */
+  --color-success: #2ecc71;    /* Verde */
+  --color-background: #f4f7f6; /* Gris claro (para el fondo de la página) */
+  --color-light: #ffffff;      /* Blanco (para las "tarjetas" o "cards") */
+  --color-text: #333333;      /* Texto principal */
+  --color-text-light: #555;
+  
+  /* Sombras */
+  --shadow-light: 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-medium: 0 2px 4px rgba(0,0,0,0.1);
+  
+  /* Bordes */
+  --border-radius: 5px;
+  --border-color: #dddddd;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* 2. Reseteo de estilos del navegador */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+h1, h2, h3, p {
+  margin: 0 0 1rem 0;
 }
