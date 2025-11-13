@@ -8,6 +8,7 @@ import DashboardPage from './pages/Dashboard/DashboardPage';
 import UserManagementPage from './pages/UserManagement/UserManagementPage';
 import PasswordResetPage from './pages/PasswordReset/PasswordResetPage';
 import PasswordResetConfirmPage from './pages/PasswordReset/PasswordResetConfirmPage';
+import ProjectTaskManagementPage from './pages/ProjectTaskManagement/ProjectTaskManagementPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 
 // Importa la Sidebar y CSS
@@ -85,8 +86,17 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
-          {/* --- Ruta Raíz (/) --- */}
+
+          {/* --- Proyectos y Tareas (Protegida) --- */}
+          <Route
+            path="/projects-tasks"
+            element={
+              <ProtectedRoute>
+                <ProjectTaskManagementPage />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="*"
             // Por defecto, cualquier ruta desconocida

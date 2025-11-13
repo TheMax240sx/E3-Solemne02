@@ -1,11 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import DashboardIndicator
+from .models import DashboardIndicator, Proyecto, Tarea
 
 # -----------------
 # Serializer para el modelo User
 # -----------------
-# Se usará para "Crear Usuarios" y "Listar Usuarios"
 class UserSerializer(serializers.ModelSerializer):
     # Hacemos que la contraseña sea de "solo escritura" (write_only)
     # para que nunca se muestre en una respuesta de la API.
@@ -17,7 +16,6 @@ class UserSerializer(serializers.ModelSerializer):
     is_superuser = serializers.BooleanField(read_only=True)
 
     def create(self, validated_data):
-        # Usamos create_user para que la contraseña se guarde "hasheada"
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -43,10 +41,26 @@ class UserSerializer(serializers.ModelSerializer):
         # Definimos los campos que la API va a usar
         fields = ['id', 'username', 'email', 'password', 'is_superuser']
 
+
 # -----------------
 # Serializer para los Indicadores
 # -----------------
 class DashboardIndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = DashboardIndicator
-        fields = ['id', 'nombre', 'valor'] # Los campos que definimos en models.py
+        fields = ['id', 'nombre', 'valor']
+
+
+# -----------------
+# Serializers de Proyectos y Tareas
+# -----------------
+class ProyectoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Proyecto
+        fields = ['id', 'name', 'description', 'fecha_inicio', 'fecha_fin', 'creador', 'created_at']
+
+
+class TareaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tarea
+        fields = ['id', 'title', 'status', 'fecha_inicio', 'fecha_fin', 'proyecto', 'asignado_a', 'estado', 'created_at']

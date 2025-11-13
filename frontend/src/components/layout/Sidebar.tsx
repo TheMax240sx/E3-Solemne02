@@ -6,9 +6,10 @@ const Sidebar: React.FC = () => (
   <aside className="sidebar">
     <nav>
       <ul>
-        <li><Link to="/">Inicio</Link></li>
-        <li><Link to="/perfil">Perfil</Link></li>
-        <li><Link to="/usuarios">Usuarios</Link></li>
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/perfil">Perfil</a></li>
+        <li><a href="/usuarios">Usuarios</a></li>
+        <li><a href="/projects-tasks">Proyectos y Tareas</a></li>
       </ul>
     </nav>
   </aside>
