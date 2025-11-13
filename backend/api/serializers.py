@@ -9,14 +9,18 @@ from .models import DashboardIndicator
 class UserSerializer(serializers.ModelSerializer):
     # Hacemos que la contraseña sea de "solo escritura" (write_only)
     # para que nunca se muestre en una respuesta de la API.
-    password = serializers.CharField(write_only=True, required=False)
+    password = serializers.CharField(
+        write_only=True, 
+        required=False,
+        allow_blank=True
+        )
     is_superuser = serializers.BooleanField(read_only=True)
 
     def create(self, validated_data):
         # Usamos create_user para que la contraseña se guarde "hasheada"
         user = User.objects.create_user(
             username=validated_data['username'],
-            email=validated_data.get('email', ''),
+            email=validated_data['email'],
             password=validated_data['password']
         )
         return user
