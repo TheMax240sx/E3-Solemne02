@@ -142,3 +142,6 @@ export const useAuth = () => {
   }
   return context;
 };
+
+// Agregar export por defecto para compatibilidad con imports actuales
+export default useAuth;
