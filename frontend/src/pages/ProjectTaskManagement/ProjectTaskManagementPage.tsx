@@ -1,75 +1,59 @@
-import React, { useEffect, useState } from "react";
-import useAuth from "../../hooks/useAuth";
+import React, { useEffect, useState, useCallback } from "react";
+// Importamos los tipos y funciones de nuestro apiService
+import {
+  getProyectosApi,
+  getTareasApi,
+  getUsuariosApi,
+} from "../../services/apiService";
+import type { Proyecto, Tarea, User } from "../../services/apiService";
 import ModalProjectForm from "./ModalProjectForm";
 import ModalTaskForm from "./ModalTaskForm";
 import "../../assets/styles/projectTaskManagement/ProjectTaskManagementPage.css";
 
-type Project = {
-  id: number;
-  name: string;
-  description?: string;
-};
-
-type Task = {
-  id: number;
-  title: string;
-  project?: number | null;
-  status?: string;
-};
-
 export default function ProjectTaskManagementPage() {
-  const { getToken } = useAuth();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [projects, setProjects] = useState<Proyecto[]>([]);
+  const [tasks, setTasks] = useState<Tarea[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
-  const [editProject, setEditProject] = useState<Project | null>(null);
-  const [editTask, setEditTask] = useState<Task | null>(null);
+  const [editProject, setEditProject] = useState<Proyecto | null>(null);
+  const [editTask, setEditTask] = useState<Tarea | null>(null);
 
-  useEffect(() => {
-    loadAll();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function fetchJson(url: string, options: RequestInit = {}) {
-    const token = getToken?.();
-    const headers = {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    };
-    const res = await fetch(url, { ...options, headers });
-    if (!res.ok) throw new Error(`Error ${res.status}`);
-    return res.json();
-  }
-
-  async function loadAll() {
+  const loadAll = useCallback(async () => {
     try {
       setLoading(true);
-      const [p, t] = await Promise.all([
-        fetchJson("/api/projects/"),
-        fetchJson("/api/tasks/"),
+      const [p, t, u] = await Promise.all([
+        getProyectosApi(),
+        getTareasApi(),
+        getUsuariosApi(),
       ]);
       setProjects(p);
       setTasks(t);
+      setUsers(u);
     } catch (err) {
       console.error(err);
+      alert("Error al cargar proyectos y tareas. Revisa la consola.");
     } finally {
       setLoading(false);
     }
-  }
+  }, []); // El array de dependencias está vacío
+
+  useEffect(() => {
+    loadAll();
+  }, [loadAll]); // Dependemos de loadAll
+
 
   function onProjectSaved() {
     setShowProjectModal(false);
     setEditProject(null);
-    loadAll();
+    loadAll(); // Recarga los datos
   }
 
   function onTaskSaved() {
     setShowTaskModal(false);
     setEditTask(null);
-    loadAll();
+    loadAll(); // Recarga los datos
   }
 
   return (
@@ -92,6 +76,7 @@ export default function ProjectTaskManagementPage() {
               {projects.map((p) => (
                 <li key={p.id} className="ptm-item">
                   <div>
+                    {/* El modelo ahora usa 'name' y 'description' */}
                     <strong>{p.name}</strong>
                     <div className="ptm-muted">{p.description}</div>
                   </div>
@@ -110,8 +95,9 @@ export default function ProjectTaskManagementPage() {
               {tasks.map((t) => (
                 <li key={t.id} className="ptm-item">
                   <div>
+                    {/* El modelo ahora usa 'title' y 'status' */}
                     <strong>{t.title}</strong>
-                    <div className="ptm-muted">Proyecto: {t.project ?? "—"} — Estado: {t.status ?? "—"}</div>
+                    <div className="ptm-muted">Proyecto: {t.proyecto ?? "—"} — Estado: {t.status ?? "—"}</div>
                   </div>
                   <div className="ptm-item-actions">
                     <button onClick={() => { setEditTask(t); setShowTaskModal(true); }}>Editar</button>
@@ -136,6 +122,7 @@ export default function ProjectTaskManagementPage() {
         <ModalTaskForm
           task={editTask}
           projects={projects}
+          users={users}
           onClose={() => { setShowTaskModal(false); setEditTask(null); }}
           onSave={onTaskSaved}
         />

@@ -57,10 +57,10 @@ class DashboardIndicatorSerializer(serializers.ModelSerializer):
 class ProyectoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Proyecto
-        fields = ['id', 'nombre', 'descripcion', 'fecha_inicio', 'fecha_fin', 'creador', 'created_at']
+        fields = ['id', 'name', 'description', 'fecha_inicio', 'fecha_fin', 'creador', 'created_at']
 
 
 class TareaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tarea
-        fields = ['id', 'nombre', 'descripcion', 'fecha_inicio', 'fecha_fin', 'proyecto', 'asignado_a', 'estado', 'created_at']
+        fields = ['id', 'title', 'status', 'fecha_inicio', 'fecha_fin', 'proyecto', 'asignado_a', 'estado', 'created_at']

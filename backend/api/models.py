@@ -12,8 +12,8 @@ class DashboardIndicator(models.Model):
 
 # Modelo Proyecto (PostgreSQL)
 class Proyecto(models.Model):
-    nombre = models.CharField(max_length=200)
-    descripcion = models.TextField(blank=True)
+    name = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
     creador = models.ForeignKey(
@@ -26,13 +26,13 @@ class Proyecto(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.nombre
+        return self.name
 
 
 # Modelo Tarea (PostgreSQL)
 class Tarea(models.Model):
-    nombre = models.CharField(max_length=200)
-    descripcion = models.TextField(blank=True)
+    title = models.CharField(max_length=200)
+    status = models.CharField(max_length=50, default="todo", null=True, blank=True)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
     proyecto = models.ForeignKey(
@@ -57,4 +57,4 @@ class Tarea(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.nombre
+        return self.title

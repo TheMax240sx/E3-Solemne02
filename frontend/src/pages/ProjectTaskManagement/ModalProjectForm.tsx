@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
-import useAuth from "../../hooks/useAuth";
+// Importamos los tipos y funciones de nuestro apiService
+import {
+  createProyectoApi,
+  updateProyectoApi,
+} from "../../services/apiService";
+import type { Proyecto, ProyectoFormData } from "../../services/apiService";
 import "../../assets/styles/projectTaskManagement/ProjectTaskManagementPage.css";
 
-type Project = {
-  id?: number;
-  name: string;
-  description?: string;
+// Definimos el estado inicial del formulario
+const initialState: ProyectoFormData = {
+  name: "",
+  description: "",
+  fecha_inicio: "",
+  fecha_fin: "",
 };
 
 export default function ModalProjectForm({
@@ -13,35 +20,53 @@ export default function ModalProjectForm({
   onClose,
   onSave,
 }: {
-  project?: Project | null;
+  project?: Proyecto | null; // Usamos el tipo importado
   onClose: () => void;
   onSave: () => void;
 }) {
-  const { getToken } = useAuth();
-  const [form, setForm] = useState<Project>({ name: "", description: "" });
+
+  const [form, setForm] = useState<Partial<ProyectoFormData>>(initialState);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (project) setForm({ name: project.name || "", description: project.description || "" });
+    if (project) {
+      // Si estamos editando, poblamos el formulario con los datos del proyecto
+      setForm({
+        name: project.name || "",
+        description: project.description || "",
+        fecha_inicio: project.fecha_inicio || "",
+        fecha_fin: project.fecha_fin || "",
+      });
+    } else {
+      // Si es nuevo, reseteamos el formulario
+      setForm(initialState);
+    }
   }, [project]);
+
+  // Handler genérico para los inputs
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+    
+    // Filtramos campos vacíos para no enviar 'null' innecesariamente
+    const dataToSave: Partial<ProyectoFormData> = { ...form };
+    if (!dataToSave.fecha_inicio) dataToSave.fecha_inicio = null;
+    if (!dataToSave.fecha_fin) dataToSave.fecha_fin = null;
+
     try {
-      const token = getToken?.();
-      const url = project?.id ? `/api/projects/${project.id}/` : "/api/projects/";
-      const method = project?.id ? "PUT" : "POST";
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) throw new Error("Error guardando proyecto");
-      onSave();
+      if (project?.id) {
+        // Actualizar
+        await updateProyectoApi(project.id, dataToSave);
+      } else {
+        // Crear
+        await createProyectoApi(dataToSave);
+      }
+      onSave(); // Llama a onSave (que recarga la lista)
     } catch (err) {
       console.error(err);
       alert("Error al guardar proyecto");
@@ -56,9 +81,17 @@ export default function ModalProjectForm({
         <h4>{project ? "Editar Proyecto" : "Nuevo Proyecto"}</h4>
         <form onSubmit={submit} className="ptm-form">
           <label>Nombre</label>
-          <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+          <input name="name" value={form.name} onChange={handleChange} required />
+          
           <label>Descripción</label>
-          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+          <textarea name="description" value={form.description || ''} onChange={handleChange} />
+          
+          <label>Fecha de Inicio</label>
+          <input name="fecha_inicio" type="date" value={form.fecha_inicio || ''} onChange={handleChange} />
+          
+          <label>Fecha de Fin</label>
+          <input name="fecha_fin" type="date" value={form.fecha_fin || ''} onChange={handleChange} />
+
           <div className="ptm-form-actions">
             <button type="button" onClick={onClose} disabled={saving}>Cancelar</button>
             <button type="submit" disabled={saving}>{saving ? "Guardando..." : "Guardar"}</button>

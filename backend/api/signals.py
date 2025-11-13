@@ -11,11 +11,10 @@ y se pueden ampliar según la lógica de la app.
 def proyecto_post_save(sender, instance, created, **kwargs):
     # Placeholder: ejecutar lógica al crear/actualizar un Proyecto
     if created:
-        # ejemplo: print para logs (opcional)
-        print(f"Proyecto creado: {instance.pk} - {instance.nombre}")
+        print(f"Proyecto creado: {instance.pk} - {instance.name}")
 
 @receiver(post_save, sender=Tarea)
 def tarea_post_save(sender, instance, created, **kwargs):
     # Placeholder: ejecutar lógica al crear/actualizar una Tarea
     if created:
-        print(f"Tarea creada: {instance.pk} - {instance.nombre}")
+        print(f"Tarea creada: {instance.pk} - {instance.title}")

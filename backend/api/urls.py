@@ -9,8 +9,8 @@ router = DefaultRouter()
 # Esto crea las rutas: /users/ (para GET, POST) y /users/<pk>/ (para GET, PUT, DELETE)
 router.register(r'users', views.UserViewSet)
 router.register(r'dashboard-stats', views.DashboardIndicatorViewSet)
-router.register(r'proyectos', views.ProyectoViewSet)
-router.register(r'tareas', views.TareaViewSet)
+router.register(r'projects', views.ProyectoViewSet)
+router.register(r'tasks', views.TareaViewSet)
 
 urlpatterns = [
     # 1. Rutas de nuestros ViewSets ( /users/, /dashboard-stats/ )

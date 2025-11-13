@@ -66,6 +66,38 @@ export interface RegisterData {
 }
 
 /**
+ * Datos para el formulario de Proyecto
+ */
+export interface Proyecto {
+  id: number;
+  name: string;
+  description?: string | null;
+  fecha_inicio?: string | null; // Django devuelve fechas como strings ISO
+  fecha_fin?: string | null;
+  creador: number; // El serializer devuelve el ID
+  created_at: string;
+}
+// Tipo para el formulario (omite campos generados por el backend)
+export type ProyectoFormData = Omit<Proyecto, 'id' | 'creador' | 'created_at'>;
+
+/**
+ * Datos para el formulario de Tarea
+ */
+export interface Tarea {
+  id: number;
+  title: string;
+  status?: string | null;
+  estado?: string | null; // Tu modelo tiene 'status' Y 'estado'. Incluimos ambos.
+  fecha_inicio?: string | null;
+  fecha_fin?: string | null;
+  proyecto?: number | null;
+  asignado_a?: number | null;
+  created_at: string;
+}
+// Tipo para el formulario
+export type TareaFormData = Omit<Tarea, 'id' | 'created_at'>;
+
+/**
  * Datos para el formulario de Reseteo de Contraseña.
  */
 export interface PasswordResetData {
@@ -211,3 +243,37 @@ export async function getMongoData(): Promise<any[]> {
   }
   return res.json();
 }
+
+// --- CRUD de Proyectos ---
+
+export const getProyectosApi = async (): Promise<Proyecto[]> => {
+  const { data } = await apiService.get<Proyecto[]>('/projects/');
+  return data;
+};
+
+export const createProyectoApi = async (proyectoData: Partial<ProyectoFormData>): Promise<Proyecto> => {
+  const { data } = await apiService.post<Proyecto>('/projects/', proyectoData);
+  return data;
+};
+
+export const updateProyectoApi = async (id: number, proyectoData: Partial<ProyectoFormData>): Promise<Proyecto> => {
+  const { data } = await apiService.put<Proyecto>(`/projects/${id}/`, proyectoData);
+  return data;
+};
+
+// --- CRUD de Tareas ---
+
+export const getTareasApi = async (): Promise<Tarea[]> => {
+  const { data } = await apiService.get<Tarea[]>('/tasks/');
+  return data;
+};
+
+export const createTareaApi = async (tareaData: Partial<TareaFormData>): Promise<Tarea> => {
+  const { data } = await apiService.post<Tarea>('/tasks/', tareaData);
+  return data;
+};
+
+export const updateTareaApi = async (id: number, tareaData: Partial<TareaFormData>): Promise<Tarea> => {
+  const { data } = await apiService.put<Tarea>(`/tasks/${id}/`, tareaData);
+  return data;
+};

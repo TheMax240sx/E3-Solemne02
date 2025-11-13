@@ -9,6 +9,7 @@ import UserManagementPage from './pages/UserManagement/UserManagementPage';
 import PasswordResetPage from './pages/PasswordReset/PasswordResetPage';
 import PasswordResetConfirmPage from './pages/PasswordReset/PasswordResetConfirmPage';
 import ProjectTaskManagementPage from './pages/ProjectTaskManagement/ProjectTaskManagementPage';
+import ProfilePage from './pages/Profile/ProfilePage';
 
 // Importa la Sidebar y CSS
 import Sidebar from './components/layout/Sidebar';

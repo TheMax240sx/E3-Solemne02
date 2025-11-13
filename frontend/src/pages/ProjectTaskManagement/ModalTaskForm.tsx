@@ -1,54 +1,75 @@
 import React, { useState, useEffect } from "react";
-import useAuth from "../../hooks/useAuth";
+import {
+  createTareaApi,
+  updateTareaApi,
+} from "../../services/apiService";
+import type { Tarea, Proyecto, TareaFormData, User } from "../../services/apiService";
 import "../../assets/styles/projectTaskManagement/ProjectTaskManagementPage.css";
 
-type Task = {
-  id?: number;
-  title: string;
-  project?: number | null;
-  status?: string;
-};
-
-type Project = {
-  id: number;
-  name: string;
+// Definimos el estado inicial
+const initialState: Partial<TareaFormData> = {
+  title: "",
+  proyecto: null,
+  status: "todo",
+  fecha_inicio: "",
+  fecha_fin: "",
+  asignado_a: null,
 };
 
 export default function ModalTaskForm({
   task,
   projects,
+  users,
   onClose,
   onSave,
 }: {
-  task?: Task | null;
-  projects: Project[];
+  task?: Tarea | null;
+  projects: Proyecto[];
+  users: User[];
   onClose: () => void;
   onSave: () => void;
 }) {
-  const { getToken } = useAuth();
-  const [form, setForm] = useState<Task>({ title: "", project: null, status: "todo" });
+  const [form, setForm] = useState<Partial<TareaFormData>>(initialState);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (task) setForm({ title: task.title || "", project: task.project ?? null, status: task.status || "todo" });
+    if (task) {
+      setForm({
+        title: task.title || "",
+        proyecto: task.proyecto ?? null,
+        status: task.status || "todo",
+        fecha_inicio: task.fecha_inicio || "",
+        fecha_fin: task.fecha_fin || "",
+        asignado_a: task.asignado_a ?? null,
+      });
+    } else {
+      setForm(initialState);
+    }
   }, [task]);
+  
+  // Handler genérico para inputs y selects
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    const finalValue = value === "" ? null : value;
+    setForm(prev => ({ ...prev, [name]: finalValue }));
+  };
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+
+    const dataToSave: Partial<TareaFormData> = { ...form };
+    if (!dataToSave.fecha_inicio) dataToSave.fecha_inicio = null;
+    if (!dataToSave.fecha_fin) dataToSave.fecha_fin = null;
+    if (dataToSave.proyecto) dataToSave.proyecto = Number(dataToSave.proyecto);
+    if (dataToSave.asignado_a) dataToSave.asignado_a = Number(dataToSave.asignado_a);
+
     try {
-      const token = getToken?.();
-      const url = task?.id ? `/api/tasks/${task.id}/` : "/api/tasks/";
-      const method = task?.id ? "PUT" : "POST";
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) throw new Error("Error guardando tarea");
+      if (task?.id) {
+        await updateTareaApi(task.id, dataToSave);
+      } else {
+        await createTareaApi(dataToSave);
+      }
       onSave();
     } catch (err) {
       console.error(err);
@@ -64,19 +85,38 @@ export default function ModalTaskForm({
         <h4>{task ? "Editar Tarea" : "Nueva Tarea"}</h4>
         <form onSubmit={submit} className="ptm-form">
           <label>Título</label>
-          <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
+          <input name="title" value={form.title} onChange={handleChange} required />
+          
           <label>Proyecto</label>
-          <select value={form.project ?? ""} onChange={(e) => setForm({ ...form, project: e.target.value ? Number(e.target.value) : null })}>
+          <select name="proyecto" value={form.proyecto ?? ""} onChange={handleChange}>
             <option value="">Sin proyecto</option>
             {projects.map((p) => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
           </select>
+          
           <label>Estado</label>
-          <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+          <select name="status" value={form.status ?? "todo"} onChange={handleChange}>
             <option value="todo">To do</option>
             <option value="in_progress">In progress</option>
             <option value="done">Done</option>
+          </select>
+          
+          <label>Fecha de Inicio</label>
+          <input name="fecha_inicio" type="date" value={form.fecha_inicio || ''} onChange={handleChange} />
+          
+          <label>Fecha de Fin</label>
+          <input name="fecha_fin" type="date" value={form.fecha_fin || ''} onChange={handleChange} />
+          
+          <label>Asignado A</label>
+          <select name="asignado_a" value={form.asignado_a ?? ""} onChange={handleChange}>
+            {/* El default "Sin asignar" que pediste */}
+            <option value="">Sin asignar</option>
+            
+            {/* La lista de usuarios (solo username) que pediste */}
+            {users.map((u) => (
+              <option key={u.id} value={u.id}>{u.username}</option>
+            ))}
           </select>
 
           <div className="ptm-form-actions">
